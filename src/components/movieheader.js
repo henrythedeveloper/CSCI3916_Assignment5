@@ -1,46 +1,71 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from "../actions/authActions";
+import { BsFilm, BsSearch, BsInfoCircle, BsPerson } from 'react-icons/bs';
 
-function MovieHeader() {
+const MovieHeader = () => {
     const dispatch = useDispatch();
-    const loggedIn = useSelector((state) => state.auth.loggedIn);
-    const username = useSelector((state) => state.auth.username);
-    const selectedMovie = useSelector((state) => state.movie.selectedMovie);
+    const loggedIn = useSelector(state => state.auth.loggedIn);
+    const username = useSelector(state => state.auth.username);
+    const selectedMovie = useSelector(state => state.movie.selectedMovie);
     
-    const logout = () => {
+    const handleLogout = () => {
         dispatch(logoutUser());
     };
-
+    
     return (
-        <div>
-            <Navbar expand="lg" bg="dark" variant="dark">
-                <Navbar.Brand as={NavLink} to="/">Movie App</Navbar.Brand> 
+        <Navbar expand="lg" bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand>
+                    <BsFilm className="me-2" /> Movie Review App
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                    <Nav.Link as={NavLink} to="/movielist" disabled={!loggedIn}> 
-                        Movie List
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to={'/movie/' + (selectedMovie? selectedMovie._id: '')} disabled={!loggedIn}>
-                        Movie Detail
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to="/signin"> 
-                        {loggedIn? (
-                        <span onClick={logout} style={{ cursor: 'pointer' }}>
-                            Logout
-                        </span>
-                        ): (
-                        'Login'
+                    <Nav className="me-auto">
+                        <LinkContainer to="/movielist">
+                            <Nav.Link disabled={!loggedIn}>
+                                <BsFilm className="me-1" /> Movies
+                            </Nav.Link>
+                        </LinkContainer>
+                        
+                        <LinkContainer to="/search">
+                            <Nav.Link disabled={!loggedIn}>
+                                <BsSearch className="me-1" /> Search
+                            </Nav.Link>
+                        </LinkContainer>
+                        
+                        {selectedMovie && (
+                            <LinkContainer to={'/movie/' + selectedMovie._id}>
+                                <Nav.Link disabled={!loggedIn}>
+                                    <BsInfoCircle className="me-1" /> Movie Detail
+                                </Nav.Link>
+                            </LinkContainer>
                         )}
-                    </Nav.Link>
-                </Nav>
+                    </Nav>
+                    <Nav>
+                        <LinkContainer to="/signin">
+                            <Nav.Link>
+                                {loggedIn ? (
+                                    <span>
+                                        <BsPerson className="me-1" /> {username} {' '}
+                                        <button className="btn btn-sm btn-outline-light ms-2" onClick={handleLogout}>
+                                            Logout
+                                        </button>
+                                    </span>
+                                ) : (
+                                    <span>
+                                        <BsPerson className="me-1" /> Login / Register
+                                    </span>
+                                )}
+                            </Nav.Link>
+                        </LinkContainer>
+                    </Nav>
                 </Navbar.Collapse>
-            </Navbar>
-        </div>
+            </Container>
+        </Navbar>
     );
-}
+};
 
 export default MovieHeader;
