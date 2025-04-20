@@ -42,6 +42,27 @@ function fetchMovieError(error) {
     }
 }
 
+
+function searchMoviesBegin() {
+    return {
+        type: actionTypes.SEARCH_MOVIES_BEGIN
+    }
+}
+
+function searchMoviesSuccess(movies) {
+    return {
+        type: actionTypes.SEARCH_MOVIES_SUCCESS,
+        searchResults: movies
+    }
+}
+
+function searchMoviesError(error) {
+    return {
+        type: actionTypes.SEARCH_MOVIES_ERROR,
+        error: error
+    }
+}
+
 // Action functions
 export function setMovie(movie) {
     return dispatch => {
@@ -122,6 +143,33 @@ export function submitReview(review) {
             // Fetch the movie again to get updated reviews
             dispatch(fetchMovie(review.movieId));
         }).catch((error) => {
+            console.log(error);
+        });
+    }
+}
+
+export function searchMovies(searchTerm) {
+    return dispatch => {
+        dispatch(searchMoviesBegin());
+        
+        return fetch(`${env.REACT_APP_API_URL}/search?reviews=true`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({ searchTerm: searchTerm }),
+            mode: 'cors'
+        }).then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json()
+        }).then((res) => {
+            dispatch(searchMoviesSuccess(res));
+        }).catch((error) => {
+            dispatch(searchMoviesError(error.message));
             console.log(error);
         });
     }

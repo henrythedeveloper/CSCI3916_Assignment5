@@ -5,7 +5,10 @@ let initialState = {
     selectedMovie: null,
     reviewSaved: false,
     loading: false,
-    error: null
+    error: null,
+    searchResults: [],
+    searching: false,
+    searchError: null
 }
 
 const movieReducer = (state = initialState, action) => {
@@ -43,6 +46,22 @@ const movieReducer = (state = initialState, action) => {
             
         case constants.REVIEW_SAVED:
             updated.reviewSaved = true;
+            return updated;
+            
+        // Search actions
+        case constants.SEARCH_MOVIES_BEGIN:
+            updated.searching = true;
+            updated.searchError = null;
+            return updated;
+            
+        case constants.SEARCH_MOVIES_SUCCESS:
+            updated.searchResults = action.searchResults;
+            updated.searching = false;
+            return updated;
+            
+        case constants.SEARCH_MOVIES_ERROR:
+            updated.searching = false;
+            updated.searchError = action.error;
             return updated;
             
         default:
