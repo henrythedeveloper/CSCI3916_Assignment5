@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { searchMovies, setMovie } from '../actions/movieActions';
 import { Form, Button, Card, ListGroup, Row, Col, Accordion, Spinner, Alert } from 'react-bootstrap';
 import { BsStarFill, BsStar, BsSearch } from 'react-icons/bs';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Image } from 'react-bootstrap';
 
 const MovieSearch = () => {
     const dispatch = useDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const searchResults = useSelector(state => state.movie.searchResults);
     const searching = useSelector(state => state.movie.searching);
     const searchError = useSelector(state => state.movie.searchError);
@@ -32,7 +32,7 @@ const MovieSearch = () => {
     
     const handleMovieSelect = (movie) => {
         dispatch(setMovie(movie));
-        history.push(`/movie/${movie._id}`);
+        navigate(`/movie/${movie._id}`);
     };
     
     // Generate star rating display
