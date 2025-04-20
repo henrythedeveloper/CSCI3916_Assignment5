@@ -5,7 +5,7 @@ import { Card, ListGroup, ListGroupItem, Row, Col, Container, Table } from 'reac
 import { BsStarFill, BsStar } from 'react-icons/bs';
 import { Image } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import ReviewForm from './reviewform';
+import ReviewForm from './ReviewForm';
 
 const MovieDetail = () => {
   const dispatch = useDispatch();
