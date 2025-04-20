@@ -92,46 +92,71 @@ const MovieSearch = () => {
     );
     
     // Accordion view of search results
+
     const AccordionView = () => (
-        <Accordion defaultActiveKey="0">
+        // Keep the main Accordion component
+        <Accordion defaultActiveKey={searchResults.length > 0 ? "0" : null}> {/* Optionally only open first if results exist */}
             {searchResults.map((movie, index) => (
                 <Accordion.Item key={movie._id} eventKey={index.toString()}>
                     <Accordion.Header>
+                        {/* Use flex utilities for better control */}
                         <div className="d-flex align-items-center w-100">
-                            <div className="me-3">
-                                <Image 
-                                    src={movie.imageUrl || 'https://via.placeholder.com/80x120?text=No+Image'} 
+                            {/* Image Container: Prevent shrinking */}
+                            <div className="flex-shrink-0 me-3">
+                                <Image
+                                    src={movie.imageUrl || 'https://via.placeholder.com/80x120?text=No+Image'}
                                     alt={movie.title}
                                     style={{ width: '80px', height: '120px', objectFit: 'cover' }}
+                                    rounded // Add rounded corners to the image
                                 />
                             </div>
-                            <div>
-                                <h5>{movie.title} ({movie.releaseDate})</h5>
+                            {/* Text Container: Allow growing */}
+                            <div className="flex-grow-1">
+                                {/* Bolder title */}
+                                <h5 className="mb-1 fw-bold">{movie.title} <span className="fw-normal">({movie.releaseDate})</span></h5>
+                                {/* Smaller rating text */}
                                 <div>
-                                    {renderStars(movie.avgRating)} {' '}
-                                    ({movie.avgRating ? movie.avgRating.toFixed(1) : '0.0'})
+                                    <small className="text-warning"> {/* Apply color directly to stars wrapper */}
+                                        {renderStars(movie.avgRating)}
+                                    </small>
+                                    {' '}
+                                    <small className="text-muted"> {/* Muted text for rating value */}
+                                        ({movie.avgRating ? movie.avgRating.toFixed(1) : 'N/A'})
+                                    </small>
                                 </div>
                             </div>
                         </div>
                     </Accordion.Header>
                     <Accordion.Body>
                         <Row>
+                            {/* Left Column: Details */}
                             <Col md={8}>
-                                <h6>Genre: {movie.genre}</h6>
-                                <h6>Cast:</h6>
-                                <ul>
-                                    {movie.actors && movie.actors.map((actor, i) => (
-                                        <li key={i}>
+                                <h6 className="text-muted">Genre:</h6>
+                                <p className="mb-3">{movie.genre}</p> {/* Use paragraph for better spacing */}
+
+                                <h6 className="text-muted">Cast:</h6>
+                                {/* Remove bullet points and default padding */}
+                                <ul className="list-unstyled ps-0 mb-3">
+                                    {movie.actors && movie.actors.length > 0 ? movie.actors.map((actor, i) => (
+                                        <li key={i} className="mb-1"> {/* Add small margin bottom to list items */}
                                             <strong>{actor.actorName}</strong> as {actor.characterName}
                                         </li>
-                                    ))}
+                                    )) : (
+                                        <li>No cast information available.</li>
+                                    )}
                                 </ul>
-                                <h6>Reviews: {movie.reviews ? movie.reviews.length : 0}</h6>
+
+                                <h6 className="text-muted">Reviews:</h6>
+                                <p>{movie.reviews ? movie.reviews.length : 0}</p>
                             </Col>
-                            <Col md={4} className="text-center">
-                                <Button 
-                                    variant="primary" 
+
+                            {/* Right Column: Button */}
+                            <Col md={4} className="d-flex flex-column align-items-center justify-content-center mt-3 mt-md-0">
+                                {/* Center button vertically and horizontally within the column */}
+                                <Button
+                                    variant="primary"
                                     onClick={() => handleMovieSelect(movie)}
+                                    className="w-75" // Make button slightly less wide if desired
                                 >
                                     View Details
                                 </Button>
